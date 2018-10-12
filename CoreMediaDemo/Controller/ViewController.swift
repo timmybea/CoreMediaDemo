@@ -12,9 +12,8 @@ import MediaPlayer
 
 class ViewController: UIViewController {
 
-    lazy var button: UIButton = {
-        let btn = UIButton(type: .roundedRect)
-        btn.setTitle("Begin", for: .normal)
+    lazy var button: CustomButton = {
+        let btn = CustomButton(type: .roundedRect)
         btn.addTarget(self, action: #selector(buttonTapped(sender:)), for: .touchUpInside)
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
@@ -41,11 +40,11 @@ class ViewController: UIViewController {
 
     }
     
-    @objc func buttonTapped(sender: UIButton) {
-        switch sender.titleLabel?.text {
-        case "Begin": self.launchOptions()
-        case "Play Movie": self.playMovie()
-        case "Close Player": self.closePlayer()
+    @objc func buttonTapped(sender: CustomButton) {
+        switch sender.option {
+        case .begin: self.launchOptions()
+        case .playMovie: self.playMovie()
+        case .closeMovie: self.closePlayer()
         default: print("Reached end of button switch")
         }
     }
@@ -66,14 +65,13 @@ class ViewController: UIViewController {
         let playerRect = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.width / 2)
         videoPlayerView = VideoPlayerView(withFrame: playerRect, videoURLString: url.path)
         view.addSubview(videoPlayerView!)
-        button.setTitle("Close Player", for: .normal)
+        button.option = .closeMovie
     }
     
     private func closePlayer() {
-//        self.videoPlayerView
         self.videoPlayerView?.removeFromSuperview()
         self.videoPlayerView = nil
-        button.setTitle("Begin", for: .normal)
+        button.option = .begin
     }
     
 }
@@ -83,7 +81,7 @@ extension ViewController : VideoServiceDelegate {
     func videoDidFinishSaving(success: Bool, url: URL?) {
         
         if success {
-            button.setTitle("Play Movie", for: .normal)
+            button.option = .playMovie
             self.videoURL = url
         }
         

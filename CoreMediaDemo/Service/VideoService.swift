@@ -8,6 +8,7 @@
 
 import UIKit
 import MobileCoreServices
+import AVFoundation
 
 
 protocol VideoServiceDelegate {
@@ -39,12 +40,11 @@ extension VideoService {
     
     private func setupVideoRecordingPicker() -> UIImagePickerController {
         let picker = UIImagePickerController()
-        picker.sourceType = UIImagePickerController.SourceType.camera
-        picker.videoQuality = UIImagePickerController.QualityType.typeMedium
+        picker.sourceType = .camera
+        picker.videoQuality = .typeMedium
         picker.allowsEditing = true
         picker.mediaTypes = [kUTTypeMovie as String]
         picker.delegate = self
-        
         return picker
     }
     
@@ -81,9 +81,9 @@ extension VideoService: UIImagePickerControllerDelegate, UINavigationControllerD
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
 
         picker.dismiss(animated: true) {
-            if let mediaURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
-                self.saveVideo(at: mediaURL)
-            }
+            
+            guard let mediaURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL else { return }            
+            self.saveVideo(at: mediaURL)
         }
 
     }

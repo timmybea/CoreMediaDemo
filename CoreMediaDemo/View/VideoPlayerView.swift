@@ -189,7 +189,7 @@ extension VideoPlayerView {
     }
     
     private func trackVideoProgress() {
-        let interval = CMTime(value: 1, timescale: 2)
+        let interval = CMTime(value: 1, timescale: 2) //value/timescale = seconds (0.5 seconds)
         player?.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main, using: { (progressTime) in
             self.currentTimeLabel.text = String.duration(from: progressTime)
             if let player = self.player {
