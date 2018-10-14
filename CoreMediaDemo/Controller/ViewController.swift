@@ -25,7 +25,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
         view.backgroundColor = UIColor.white
     }
     
@@ -37,7 +37,6 @@ class ViewController: UIViewController {
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             button.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
-
     }
     
     @objc func buttonTapped(sender: CustomButton) {
@@ -45,7 +44,6 @@ class ViewController: UIViewController {
         case .begin: self.launchOptions()
         case .playMovie: self.playMovie()
         case .closeMovie: self.closePlayer()
-        default: print("Reached end of button switch")
         }
     }
     
@@ -57,7 +55,7 @@ class ViewController: UIViewController {
             }
         }
     }
-
+    
     private func playMovie() {
         
         guard let url = videoURL else { return }
@@ -78,7 +76,8 @@ class ViewController: UIViewController {
 
 extension ViewController : VideoServiceDelegate {
     
-    func videoDidFinishSaving(success: Bool, url: URL?) {
+    func videoDidFinishSaving(error: Error?, url: URL?) {
+        let success: Bool = error == nil
         
         if success {
             button.option = .playMovie
@@ -90,6 +89,7 @@ extension ViewController : VideoServiceDelegate {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
-        
     }
+        
+
 }

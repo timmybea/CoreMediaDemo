@@ -8,11 +8,9 @@
 
 import UIKit
 import MobileCoreServices
-import AVFoundation
-
 
 protocol VideoServiceDelegate {
-    func videoDidFinishSaving(success: Bool, url: URL?)
+    func videoDidFinishSaving(error: Error?, url: URL?)
 }
 
 class VideoService: NSObject {
@@ -42,7 +40,6 @@ extension VideoService {
         let picker = UIImagePickerController()
         picker.sourceType = .camera
         picker.videoQuality = .typeMedium
-        picker.allowsEditing = true
         picker.mediaTypes = [kUTTypeMovie as String]
         picker.delegate = self
         return picker
@@ -51,9 +48,9 @@ extension VideoService {
     func launchVideoRecorder(in vc: UIViewController, completion: (() -> ())?) {
         guard isVideoRecordingAvailable() else {
             return }
-        
+
         let picker = setupVideoRecordingPicker()
-        
+
         if Device.isPhone {
             vc.present(picker, animated: true) {
                 completion?()
@@ -70,21 +67,20 @@ extension VideoService {
     }
     
     @objc func video(videoPath: NSString, didFinishSavingWithError error: NSError?, contextInfo info: AnyObject) {
-        let success = error == nil
         let videoURL = URL(fileURLWithPath: videoPath as String)
-        self.delegate?.videoDidFinishSaving(success: success, url: videoURL)
+        self.delegate?.videoDidFinishSaving(error: error, url: videoURL)
     }
 }
 
 extension VideoService: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
+
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
 
         picker.dismiss(animated: true) {
-            
-            guard let mediaURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL else { return }            
-            self.saveVideo(at: mediaURL)
-        }
 
+            guard let mediaURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL else { return }
+            self.saveVideo(at: mediaURL)
+
+        }
     }
 }

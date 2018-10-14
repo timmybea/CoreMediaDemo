@@ -14,6 +14,7 @@ class VideoPlayerView: UIView {
     //MARK: Properties
     private var player: AVPlayer?
     private var playerLayer: AVPlayerLayer?
+    
     private var gradientLayer: CAGradientLayer?
     
     private var isSettingPlay = true
@@ -65,7 +66,6 @@ class VideoPlayerView: UIView {
         backgroundColor = UIColor.black
         
         setupVideoPlayer(with: videoURLString)
-        
         setupSubviews()
     }
     
@@ -74,17 +74,13 @@ class VideoPlayerView: UIView {
     }
     
     @objc private func handleTapGesture() {
-        handlePausePlayTouch()
-    }
     
-    @objc private func handlePausePlayTouch() {
         if isSettingPlay {
             player?.pause()
-            isSettingPlay = false
         } else {
             player?.play()
-            isSettingPlay = true
         }
+        isSettingPlay = !isSettingPlay
     }
     
     @objc private func handleSliderChangedValue() {
@@ -159,11 +155,6 @@ extension VideoPlayerView {
             slider.heightAnchor.constraint(equalToConstant: 24)
             ])
     }
-    
-    func redrawLayers() {
-        playerLayer?.frame = self.bounds
-        gradientLayer?.frame = self.bounds
-    }
 }
 
 //MARK: Player logic
@@ -171,7 +162,6 @@ extension VideoPlayerView {
     
     private func setupVideoPlayer(with path: String) {
         addPlayer(with: path)
-        
         player?.play()
         
         player?.addObserver(self, forKeyPath: AVPlayer.observableKey.loadedTimeRanges.rawValue, options: .new, context: nil)
